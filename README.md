@@ -1,88 +1,91 @@
+# Heart Disease Classification and Model Evaluation
+
+This project explores heart disease prediction using the UCI Heart Disease dataset. The main goal was to compare several machine learning methods for classifying whether a patient has heart disease based on clinical measurements. In addition to the main supervised learning models, the project also includes a PCA comparison and an exploratory hierarchical clustering section.
+
+## Project Overview
+
+The dataset contains 303 observations and 13 predictor variables describing patient health measurements such as age, chest pain type, cholesterol, blood pressure, exercise-induced angina, and other clinical indicators. The original target variable was converted into a binary outcome:
+
+- `0` = no heart disease
+- `1` = heart disease present
+
+The following methods were used in the project:
+
+- Logistic Regression
+- k-Nearest Neighbors (k-NN)
+- Support Vector Machine (SVM)
+- Principal Component Analysis (PCA)
+- Hierarchical Clustering
+
+## Main Results
+
+The original model comparison showed that:
+
+- **k-NN** achieved the strongest raw classification performance, with the highest accuracy, highest F1-score, and perfect recall on the test set.
+- **Logistic Regression** achieved the highest ROC-AUC and was the strongest overall practical model because it combined strong predictive performance with interpretability.
+- **SVM** also performed well, but did not outperform the other two main models.
+
+The PCA extension showed that:
+
+- Logistic Regression was nearly unchanged after PCA
+- SVM improved slightly after PCA
+- k-NN became noticeably worse after PCA
+
+The hierarchical clustering extension showed that patients could be grouped into clusters with very different heart disease rates, suggesting meaningful structure in the data even without using the target label.
+
+## Files in This Repository
+
+- `isc4242_courseproject.pdf`  
+  Final written report for the course project
+
+- `heart_disease_project_notebook.ipynb`  
+  Jupyter notebook containing all code for preprocessing, model fitting, evaluation, PCA, and hierarchical clustering
+
+## Dataset Source
+
+UCI Machine Learning Repository: Heart Disease Dataset
+
+Reference:  
+Janosi, A., Steinbrunn, W., Pfisterer, M., & Detrano, R. (1989). *Heart Disease* [Dataset]. UCI Machine Learning Repository.  
+DOI: https://doi.org/10.24432/C52P4X
+
+## Methods Summary
+
+### Preprocessing
+- Converted the target variable into binary form
+- Filled missing values in `ca` and `thal` using mode imputation
+- Applied an 80/20 train-test split
+- Standardized predictors using `StandardScaler`
+
+### Evaluation Metrics
+The models were evaluated using:
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+- Confusion matrices
+- ROC curves
+
+### Model Tuning
+- k-NN was tuned using 5-fold cross-validation over values of `k`
+- SVM was tuned using 5-fold cross-validation over `C` and `gamma`
+- PCA-based versions of k-NN and SVM were also tuned using 5-fold cross-validation
+
+## Why This Project Matters
+
+This project highlights an important point in machine learning: the model with the highest accuracy is not always automatically the best overall choice. In this case, k-NN had the strongest raw performance, but Logistic Regression provided a better balance of predictive strength, stability, and interpretability. Since this is a healthcare-related problem, model transparency and the cost of false negatives are important factors in deciding which method is most useful.
+
+## Possible Future Improvements
+
+Some possible extensions of this project include:
+
+- testing more modern or larger heart disease datasets
+- adding feature engineering
+- comparing regularized classification models
+- using repeated cross-validation for more stable performance estimates
+- exploring additional interpretable machine learning methods
+
+## Author
+
 Jonathan Snyder
-ISC 4242
-5/1/26
-Heart Disease Classification and Model Evaluation
-Reference:
-Janosi, A., Steinbrunn, W., Pfisterer, M., & Detrano, R. (1989). Heart Disease [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C52P4X
-
-Introduction
-	Heart disease is an important health issue and one of my other courses this semester focused a lot on survival analysis and similar health matters. I found that interesting so I decided to make that my topic for this project. Since a lot of clinical measurements give insight into a patient’s condition, machine learning models can be used to predict whether heart disease is present based off of those measurements. For the project I decided to use the UCI Heart Disease dataset since it is a well known dataset for classification problems and because it was from suggested data sets in the assignment details. The dataset contains 303 observations, 13 predictor variables, and one target variable that represents heart disease status. The predictor variables include measurements such as age, sex, chest pain type, resting blood pressure, cholesterol, fasting blood sugar, resting ECG results, maximum heart rate achieved, exercise-induced angina, oldpeak, slope, ca and thal. Together these variables describe different aspects of a patient's health and could help explain whether heart disease is present or not. The original target variable in the dataset is coded from 0 to 4, where 0 means no heart disease and values 1 through 4 mean heart disease is present. For my project I converted the target into a binary variable so the problem could be treated more as a classification task.
-	The main goal for this project was to compare several machine learning methods to see which one works best for predicting heart disease. The three main classification methods I used were Logistic Regression, k-Nearest Neighbors, and Support Vector Machines. I chose these models since they each represent a different approach to classification. Logistic Regression provides a simple interpretable baseline, k-NN uses distance between observations to classify patients and SVM uses a decision boundary that can handle more complex separation between classes. In addition to the main model comparison I also decided to include Principal Component Analysis as a dimensionality reduction extension, as well as hierarchical clustering as an exploratory analysis to see if patients formed a natural grouping with different heart diseases.
-	Overall, the purpose of this project was to build and evaluate models for heart disease prediction while also comparing their strengths, weaknesses, and practical usefulness. In addition to looking at overall accuracy, this report also considers metrics such as precision, recall, F1-score, and ROC-AUC. The rest of the report goes over the preprocessing steps, methods used, results and interpretation of the findings.
-
-Data Preprocessing
-	Before modeling, I applied some preprocessing steps to make the dataset suitable for classification. The original dataset contained 303 observations, 13 predictor variables and the target variable num. Initial inspection showed that only two predictors had missing values. That being ca with 4 missing values and thal with 2 missing values. Since the amount of missing data was very small these values were filled using the mode of each column. The original target variable was coded from 0 to 4, where 0 indicated no heart disease and values 1 through 4 indicated disease presence. For this project, the target was converted into a binary outcome, where 0 represented no heart disease and 1 represented heart disease present. After conversion, the dataset contained 164 no-disease observations and 139 disease-present observations, so the classes were fairly balanced. 
-
-	The data was then split into training and test sets using an 80/20 split, resulting in 242 training observations and 61 test observations. Finally, all predictors were standardized using StandardScaler so that variables measured on different numerical scales would not disproportionately affect models such as k-NN and SVM.
- 
-
-Methods/Models Used:
-Logistic Regression
-	The first model I used in the project was logistic regression. This model is commonly used for binary classification because it estimates the probability that an observation belongs to one of two classes. In this case it estimates the probability that a patient has heart disease based on the available clinical variables. Logistic Regression was included because it is a strong baseline model and it is also easier to interpret than many other machine learning methods. In a healthcare-related problem, interpretability matters because it is useful to have a model that is not only accurate, but easy to understand.
-
-K-Nearest Neighbors
-The second model I used was k-Nearest Neighbors. Unlike Logistic Regression, k-NN does not fit a global equation to the data. Instead, it classifies a new observation based on the majority class among its nearest neighbors in the training data. Because k-NN depends directly on distances between observations, scaling the predictors was important. The main tuning parameter for this model is the number of neighbors, k. To choose this value in a more systematic way, I used 5-fold cross-validation with a grid search over values from 1 to 20, and the best result was k=5 for the original feature space. 
-
-Support Vector Machine
-The third model that I used was the Support Vector Machine. SVM works by finding a decision boundary that separates the classes as well as possible while maximizing the margin between them. For this project, I used an RBF kernel, because it allows the model to capture more flexible boundaries than a purely linear separator. Like k-NN, SVM is sensitive to the scale of the predictors, so it was fit on standardized data. The main tunning parameters were C and y. I used a 5-fold cross-validation with grid search to choose the best combination. The best-performing original SVM model used C=1 and y=0.01.
-
-Model Evaluation Strategy
-To evaluate the models fairly, all three classifiers were trained on the training set and then tested on same held-out test set. I used accuracy, precision, recall, F1-score, and ROC-AUC as the main evaluation metrics. These metrics help give a more complete picture than just accuracy alone. Accuracy measures overall correctness, precision shows how reliable positive predictions are, recall measures how well the model catches true heart disease cases, F1-score balances precision and recall, and ROC-AUC measures how well the model separates the two classes across thresholds. I also used confusion matrices and ROC curves to visualize model performance.
-
-Principal Component Analysis
-	After comparing the original models, I used Principal Component Analysis as an extension to see whether dimensionality reduction would affect performance. PCA transforms the original predictors into a smaller set of principal components that capture the main variation in the data. Based on the cumulative explained variance, I selected 10 principal components, which preserved about 91.3% of the original variance. After that I refit the logistic regression, k-NN, and SVM on the PCA-transformed data and compared the results with the original versions of the models. I also used a 2-component PCA project for visualization, although those two components explained only about 36.8% of the total variance
-
-Hierarchical Clustering
-	As an additional exploratory extension, I applied hierarchical clustering to the standardized dataset using Ward linkage. The purpose behind this part wasn’t to replace supervised classification analysis, but to see whether patient records would naturally form into groups with different levels of heart disease. I used a dendrogram to examine the cluster structure, then I grouped the data into 3 clusters for interpretation. After assigning cluster labels, I compared heart disease across clusters to see if unsupervised grouping lined up with meaningful differences in disease prevalence.
-
-
-Overall the methods used in this project were used to give a mix of interpretability, predictive modeling, dimensionality reduction, and exploratory analysis. This made it possible to compare different classification strategies while also looking at how PCA and clustering added to the overall understanding of the dataset.
-
-
-Results
-After preprocessing the dataset and fitting the three classification models, I compared their performance using accuracy, precision, recall, F1-score, and ROC-AUC. The original model comparison showed that all three methods performed well, but each had a different strength. K-NN achieved the highest overall accuracy (0.8852), the recall (1.0000), and the highest F1-score (0.8889). Meaning on the original feature space, k-NN was the strongest model for identifying patients with heart disease correctly. Logistic Regression performed slightly below k-NN in accuracy, with an accuracy of 0.8689, but it achieved the highest ROC-AUC (0.9513), thus indicating the strongest overall ability to separate the two classes across classification thresholds. SVM also performed well with an accuracy of 0.8525 and ROC-AUC of 0.9394 but it did not outperform the other two models. The full comparison between the original models is shown here. (Section 9, results_df) table 1
-
-	The confusion matrices made the tradeoffs between the models easier to see. Logistic Regression produced 27 true negatives, 26 true positives and, 6 false positives, and 2 false negatives, which made it on the most balanced models overall. K-NN produced 26 true negatives, 28 true positives, 7 false positives, and 0 false negatives. Its most important result was the complete absence of false negatives, meaning that it correctly identified every heart disease in the test test set. SVM produced 28 true negatives, 24 true positives, 5 false positives, and 4 false negatives. So slightly better when it comes to false positives but overall weaker than the other two when it comes to identifying all the true heart disease cases. The confusion matrices are shown below. (Section 10, confusion matrix plot) figure 1
-
-
-The ROC curves supported a slightly different interpretation of the model performance. All three models produced ROC curves well above the diagonal reference line, showing that each method had real predictive value. But logistic regression achieved the highest ROC-AUC at 0.9513, followed by SVM at 0.9394 and k-NN at 0.9232. This suggests that although k-NN performed best in terms of final test accuracy and recall, logistic regression had the strongest overall discrimination ability across different thresholds. This shows that the best model is not always determined only by accuracy but also by how well it can separate the classes more generally..Roc comparison is shown below. (Section 11, ROC curve plot) figure 2
-
-	After the original models were fitted, PCA was applied as an extension to see if dimensionality reduction would improve, preserve, or weaken model performance. Based off of cumulative explained variance, 10 principal components were selected. This reduced the feature space from 13 original predictors to 10 components while preserving approximately 91.3% of the total variance. The cumulative model explained variance used to justify this choice is shown in the figure below. (Section 13, PCA explained variance plot) figure 3
-
-For visualization purposes, I also projected the data onto the first two principal components. However, those two components explained only about 36.8% of total variance and showed a fair amount of overlap between the two classes. So basically the two-dimensional PCA view was useful for visualization and not really for complete separation. The projection is shown below. (Section 14, PCA scatterplot) figure 4
-	
-
-For the PCA-based section results showed that dimensionality reduction affected each of the models differently. Logistic Regression + PCA was almost identical to the original logistic regression model, with an accuracy of 0.8689, recall of 0.9286, F1-score of 0.8667 and ROC-AUC of 0.9470. This suggests that logistic regression was very stable under PCA and that the reduced feature space still preserved the main structure it relied on. On the other hand k-NN + PCA performed noticeably worse than the original k-NN model, with accuracy dropping to 0.7869, recall dropping to 0.7857, and F1-score dropping to 0.7719, The most significant change was that the PCA version of k-NN went from having 0 false negatives to 6 false negatives, meaning that it missed several true heart disease cases. This suggests that PCA weakened the local neighborhood structure that made k-NN effective in the original feature space. SVM + PCA improved slightly compared to the original SVM model, reaching an accuracy of 0.8689, recall of 0.8929, F1-score of 0.8621, and ROC-AUC of 0.9459. The table is shown below. (Section 16, pca_results_df) table 2
-
-
-I placed the original and PCA-based results to compare the effect of dimensionality across all models, the original and PCA-based results were also placed side by side. This full comparison shows that PCA was not a universal improvement. Logistic Regression was nearly unchanged, SVm was helped slightly, and k-NN was worsened. The table is shown below. (Section 17, combined_results_df) table 3
-
-
-As an unsupervised exploratory extension, I applied hierarchical clustering to the standardized predictor space using Ward linkage. The dendrogram suggested that the patient records did contain some grouping structure, but separation was not perfectly clear. The dendrogram is shown below. (Section 18, dendrogram) figure 5
-
-
-Based on the dendrogram and for easier interpretation, I grouped the data into 3 clusters and then compared the heart disease rate within the groups. The clustering results showed a clear difference in heart disease prevalence across the three clusters. Cluster 1 was the largest group, with 186 observations, and had a heart disease rate of only 30.6%, suggesting a relatively lower-risk patient profile. Cluster 2 contained 44 observations and had a heart disease rate of around 50.0% making it a more intermediate group. Cluster 3 contained 73 observations and had the highest heart disease rate by far, at 82.2% suggesting a much higher-risk patient profile. The summary is shown below. (Section 19, cluster_summary) table 4
-
-In addition the bar chart of heart disease rate by cluster also helped show the pattern clearly, showing a strong increase in disease prevalence from cluster 1 to cluster 3. Since the clustering procedure was unsupervised and did not use the target label when forming the groups this results suggests that the predictor variables contain meaningful underlying structure related to heart disease status. The cluster plot chart is shown below. (Section 20, cluster heart disease rate bar chart) figure 6
-
-Discussion/Conclusion
-The results from the project showed that all three original classification models were capable of predicting heart disease reasonably well, but they did not perform equally across all of the evaluation measures. The strongest raw classification performance came from k-Nearest Neighbors, which achieved the highest accuracy, the highest F1-score, and perfect recall on the test set. Its biggest strength was that it did not miss any of the patients who actually had heart disease. In a healthcare-related setting, this is an important advantage because false negatives can be especially costly. At the same time, k-NN also produced more false positives than the other models, which means it was more likely to flag some healthy patients as having disease.
-Even though k-NN had the best raw classification performance, logistic regression still stands out as the strongest overall practical model. Its accuracy and recall were both very strong, and it achieved the highest ROC-AUC of all the original models. This suggests that logistic regression had the best overall ability to separate the two classes across different thresholds, even if it did not have the highest single test accuracy. Additionally logistic regression is much easier to interpret than k-NN or SVM, which is especially useful in a healthcare context where model transparency matters. So, the project doesn't just point to the highest accuracy and stop there. Instead the results suggest the choice of the best model depends on what aspect of performance matters most.
-The PCA results added another important layer to the analysis. PCA didn’t affect all models the same way. Logistic regression remained the most unchanged, which suggests that it was still stable under dimensionality reduction and that the reduced feature space still preserved the structure it needed. SVM improved slightly after PCA, which may mean that PCA removed some redundancy or noise from the original predictors. In contrast, k-NN became much worse after PCA, especially in the recall department. This most likely happened because k-NN depends heavily on the local neighborhood structure of the original feature space, and PCA changed that enough to weaken the model’s ability to detect heart disease cases. This part of the project showed that dimensionality reduction is not automatically helpful just because it preserves variance. A method can still lose important predictive structure even when most of the total variance is retained.
-The hierarchical clustering extension was also helpful because it showed that the patient data contained meaningful grouping structure beyond the classification models. The three clusters that were formed had clearly different heart disease rates, ranging from 30.6% in the lowest-risk cluster to 82.2% in the highest-risk cluster. Since clustering was done without use of the target label, this would suggest that the predictors naturally organize patients into groups with different disease prevalence. While this clustering result should not be interpreted as a formal predictive model it does add onto everything and it shows that the dataset contains real underlying structure related to heart disease status.
-For this project it should be acknowledged that there are some limitations. Firstly the dataset isn’t that large with only 303 oberstavion. So model results may be sensitive to the specific train-test split that was used. Second, the dataset is older and may not fully reflect current medical populations, clinical practices or modern advancements or measurements. The third thing being that converting the target into a binary outcome made the classification task simplerer, but it also removed information about different levels of disease severity. Additionally the missing values were handled using simple mode imputation, which was reasonable here since there were only a few missing entries, but in the future more advanced methods could still be explored.
-From a real-world perspective, this project shows both the value and limits of predictive modeling in healthcare. A model like k-NN may be attractive because of its ability to catch all disease cases in this test set, while logistic regression may be more favorable in practice because it combines strong performance with good interpretability. However neither model should be treated as a replacement for actual medical judgement. These kinds of models would be good though as being used as a decision support tool to help identify patients who might need additional screening or attention. Future improvements to the project could include testing more modern datasets, trying additional feature engineering, comparing regularized models, or maybe using repeated cross-validation to try and get an even more stable estimate model performance.
-
-Conclusion
-	Overall, the goal of this project was to compare machine learning methods for predicting heart disease using the UCI Heart Disease dataset. After preprocessing the data, converting the target into a binary outcome, and standardizing the predictors, three main classification models were tested. That being logistic regression, k-Nearest Neighbors, and Support Vector Machines. The results showed that k-NN achieved the strongest raw classification performance on the original feature space, with the highest accuracy, highest F1-score, and perfect recall. However though, Logistic Regression emerged as the strongest overall practical model because it remained highly competitive across the main test metrics, achieved the highest ROC-AUC and it offered better interpretability for healthcare-related problems.
-	The project also showed that dimensionality reduction and exploratory analysis added useful insight without changing the main conclusion. PCA left logistic regression almost unchanged, improved SVM slightly, and clearly reduced the performance of k-NN, showing that PCA was more useful as a comparison tool than as a universal improvement. The hierarchical clustering extension further showed that the patients can be grouped into clusters of very different heart disease rates, suggesting meaningful underlying structure in the dataset. Overall, this project showed that model selection should be based not only on accuracy, but also on interpretability, robustness ,and the type of classification errors that matter most in context,
- 
-
-
-
-
-
-
-
-
-
